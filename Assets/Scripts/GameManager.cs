@@ -12,6 +12,7 @@ public class GameManager : AbstractSingleton<GameManager>
         if (Input.GetKeyDown(KeyCode.R))
         {
             ResetPlayer();
+            CloneManager.Instance.ResetClones();
         }
     }
 

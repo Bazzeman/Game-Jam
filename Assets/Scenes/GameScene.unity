@@ -917,11 +917,11 @@ MonoBehaviour:
   _enemyPrefab: {fileID: 399178689627270715, guid: 777e6c6afd4e97a408e5ce1fed743601, type: 3}
   _enemyObjectsParent: {fileID: 2016793128}
   _enemySpawnPoints:
-  - Name: 
+  - Name: 1
     SpawnPosition: {fileID: 328665383}
     EnemyCount: 1
-  - Name: 
-    SpawnPosition: {fileID: 0}
+  - Name: 2
+    SpawnPosition: {fileID: 1207704715}
     EnemyCount: 2
 --- !u!1001 &1340265579106472141
 PrefabInstance:

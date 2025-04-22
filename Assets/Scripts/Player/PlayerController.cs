@@ -15,7 +15,8 @@ public class PlayerController : MonoBehaviour
     private Action<CallbackContext> onJumpCanceled;
     private Action<CallbackContext> onMovePerformed;
     private Action<CallbackContext> onMoveCanceled;
-    private FrameInput frameInput;
+    private FrameInput currentFrameInput;
+    private FrameInput previousFrameInput;
     private Vector2 frameVelocity;
     private Vector2 inputMovementVector;
     private bool cachedQueryStartInColliders;
@@ -61,6 +62,7 @@ public class PlayerController : MonoBehaviour
     {
         time += Time.deltaTime;
         GatherInput();
+        HandleInputChange();
     }
 
     private void FixedUpdate()
@@ -92,7 +94,7 @@ public class PlayerController : MonoBehaviour
 
     private void GatherInput()
     {
-        frameInput = new FrameInput
+        currentFrameInput = new FrameInput
         {
             IsJumpingDown = playerActions.Jump.WasPressedThisFrame(),
             IsJumpHeld = isJumpBeingHeld,
@@ -101,15 +103,24 @@ public class PlayerController : MonoBehaviour
 
         if (_settings.SnapInput)
         {
-            frameInput.WASD.x = Mathf.Abs(frameInput.WASD.x) < _settings.HorizontalDeadZoneThreshold ? 0 : Mathf.Sign(frameInput.WASD.x);
-            frameInput.WASD.y = Mathf.Abs(frameInput.WASD.y) < _settings.VerticalDeadZoneThreshold ? 0 : Mathf.Sign(frameInput.WASD.y);
+            currentFrameInput.WASD.x = Mathf.Abs(currentFrameInput.WASD.x) < _settings.HorizontalDeadZoneThreshold ? 0 : Mathf.Sign(currentFrameInput.WASD.x);
+            currentFrameInput.WASD.y = Mathf.Abs(currentFrameInput.WASD.y) < _settings.VerticalDeadZoneThreshold ? 0 : Mathf.Sign(currentFrameInput.WASD.y);
         }
 
-        if (frameInput.IsJumpingDown)
+        if (currentFrameInput.IsJumpingDown)
         {
             jumpToConsume = true;
             timeJumpWasPressed = time;
         }
+    }
+
+    private void HandleInputChange()
+    {
+        if (!currentFrameInput.Equals(previousFrameInput)) {
+            Debug.Log("Input change detected!");
+        }
+
+        previousFrameInput = currentFrameInput;
     }
 
     private void CheckCollisions()
@@ -143,7 +154,7 @@ public class PlayerController : MonoBehaviour
 
     private void HandleJump()
     {
-        if (!endedJumpEarly && !grounded && !frameInput.IsJumpHeld && rb.linearVelocity.y > 0) endedJumpEarly = true;
+        if (!endedJumpEarly && !grounded && !currentFrameInput.IsJumpHeld && rb.linearVelocity.y > 0) endedJumpEarly = true;
 
         if (!jumpToConsume && !HasBufferedJump) return;
 
@@ -163,12 +174,12 @@ public class PlayerController : MonoBehaviour
 
     private void HandleDirection()
     {
-        if (frameInput.WASD.x == 0)
+        if (currentFrameInput.WASD.x == 0)
         {
             var deceleration = grounded ? _settings.GroundDeceleration : _settings.AirDeceleration;
             frameVelocity.x = Mathf.MoveTowards(frameVelocity.x, 0, deceleration * Time.fixedDeltaTime);
         }
-        else frameVelocity.x = Mathf.MoveTowards(frameVelocity.x, frameInput.WASD.x * _settings.MaxSpeed, _settings.Acceleration * Time.fixedDeltaTime);
+        else frameVelocity.x = Mathf.MoveTowards(frameVelocity.x, currentFrameInput.WASD.x * _settings.MaxSpeed, _settings.Acceleration * Time.fixedDeltaTime);
     }
 
     private void HandleGravity()
@@ -190,4 +201,9 @@ public struct FrameInput
     public bool IsJumpingDown;
     public bool IsJumpHeld;
     public Vector2 WASD;
+
+    public bool Equals(FrameInput other)
+        => IsJumpingDown == other.IsJumpingDown
+        && IsJumpHeld == other.IsJumpHeld
+        && WASD.Equals(other.WASD);
 }

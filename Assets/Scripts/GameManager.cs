@@ -13,6 +13,7 @@ public class GameManager : AbstractSingleton<GameManager>
         {
             ResetPlayer();
             CloneManager.Instance.ResetClones();
+            EnemyManager.Instance.ResetEnemies();
         }
     }
 

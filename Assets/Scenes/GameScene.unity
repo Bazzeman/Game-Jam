@@ -921,7 +921,7 @@ MonoBehaviour:
     SpawnPosition: {fileID: 328665383}
     EnemyCount: 1
   - Name: 
-    SpawnPosition: {fileID: 1207704715}
+    SpawnPosition: {fileID: 0}
     EnemyCount: 2
 --- !u!1001 &1340265579106472141
 PrefabInstance:

@@ -54,6 +54,14 @@ public class EnemyManager : AbstractSingleton<EnemyManager>
             for (int i = 0, index = 0; i < _enemySpawnPoints.Length; i++)
             {
                 var spawnPoint = _enemySpawnPoints[i];
+                if (spawnPoint.SpawnPosition == null)
+                {
+#if UNITY_EDITOR
+                    Debug.LogError("A spawn position for every enemy spawn point must be assigned! Skipping this enemy spawn point.");
+#endif
+                    continue;
+                }
+
                 for (int j = 0; j < spawnPoint.EnemyCount; j++, index++)
                 {
                     enemyObjects[index] = InstantiateEnemy(spawnPoint.SpawnPosition);

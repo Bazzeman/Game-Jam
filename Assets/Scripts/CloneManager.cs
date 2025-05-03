@@ -1,4 +1,5 @@
 using Bas.Pennings.DevTools;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,6 +13,7 @@ public class CloneManager : AbstractSingleton<CloneManager>
     [SerializeField] private Transform _clonesParentObject;
 
     private List<GameObject> cloneObjects = new();
+    private DateTimeInput[] playerInputChanges;
     private Coroutine cloneSpawningRoutine;
     private int cloneCount = 1; // Should be replaced with the how many iterations there are.
 

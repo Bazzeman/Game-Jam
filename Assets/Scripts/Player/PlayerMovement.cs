@@ -118,6 +118,14 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!currentFrameInput.Equals(previousFrameInput)) {
             Debug.Log("Input change detected!");
+
+            var dateTimeInput = new DateTimeInput
+            {
+                IsJumpingDown = currentFrameInput.IsJumpingDown,
+                IsJumpHeld = currentFrameInput.IsJumpHeld,
+                WASD = currentFrameInput.WASD,
+                DateTime = DateTime.Now,
+            };
         }
 
         previousFrameInput = currentFrameInput;
@@ -194,16 +202,16 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void ApplyMovement() => rb.linearVelocity = frameVelocity;
-}
 
-public struct FrameInput
-{
-    public bool IsJumpingDown;
-    public bool IsJumpHeld;
-    public Vector2 WASD;
+    private struct FrameInput
+    {
+        public bool IsJumpingDown;
+        public bool IsJumpHeld;
+        public Vector2 WASD;
 
-    public bool Equals(FrameInput other)
-        => IsJumpingDown == other.IsJumpingDown
-        && IsJumpHeld == other.IsJumpHeld
-        && WASD.Equals(other.WASD);
+        public bool Equals(FrameInput other)
+            => IsJumpingDown == other.IsJumpingDown
+            && IsJumpHeld == other.IsJumpHeld
+            && WASD.Equals(other.WASD);
+    }
 }
